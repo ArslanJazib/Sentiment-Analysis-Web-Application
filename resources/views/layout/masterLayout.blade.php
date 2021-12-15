@@ -1,0 +1,12 @@
+<html>
+    <head>
+        @include('templates.header')
+        @yield('header')
+    </head>
+    <body>
+        @yield('content')
+        @include('templates.navbar')
+        @include('templates.scripts')
+        @yield('scripts')
+    </body>
+</html>

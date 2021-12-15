@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Search_controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/Search' , [Search_controller::class,'index']);
+Route::get('/submitRequest' , [Search_controller::class,'search_processor']);
+Route::get('/visualize' , [Search_controller::class,'visualize_data']);
+
+
+
