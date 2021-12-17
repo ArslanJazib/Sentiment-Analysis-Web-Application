@@ -54,7 +54,8 @@ def sentimentAnalyzer(tweet):
         # Voting on multiple combinations
         print(json.dumps(mode([svm_prediction, naive_prediction, lstm_prediction])))
     except ValueError:
-        print(json.dumps(0))
+
+        print(json.dumps(1))
 
 
 

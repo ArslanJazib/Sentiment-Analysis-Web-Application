@@ -14,8 +14,14 @@
     <link type="text/css" rel="stylesheet" href="{{ asset('assets/css/mainPage.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ asset('assets/css/visualizationPage.css') }}">
     <!-- jQuery  -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <!-- chartjs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <!-- busyload plugin -->
+    <link href="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
+    <!-- Magnific Popup plugin -->
+    <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css') }}">
+    <script src="{{ asset('assets/js/jquery.magnific-popup.js') }}"></script>
 @endsection
 

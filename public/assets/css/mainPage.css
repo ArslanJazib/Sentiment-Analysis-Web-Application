@@ -862,16 +862,13 @@ legend {
 }
 
 .s013 {
-  min-height: 100vh;
+  min-height: 79vh;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
       justify-content: center;
   -ms-flex-align: center;
       align-items: center;
-  background: url("../images/mainPage_background.png");
-  background-size: cover;
-  background-position: center center;
   padding: 15px;
   font-family: 'Poppins', sans-serif;
 }
@@ -899,20 +896,20 @@ legend {
 
 .s013 form .inner-form .input-wrap {
   background: #474747;
-  height: 80px;
+  height: 90px;
   position: relative;
   padding: 20px 25px 20px 25px;
 }
 
 .s013 form .inner-form .input-wrap .input-field label {
-  font-size: 11px;
-  font-weight: 500;
-  display: block;
-  color: white;
+    font-size: 14px;
+    font-weight: 500;
+    display: block;
+    color: white;
 }
 
 .s013 form .inner-form .input-wrap .input-field input {
-  font-size: 16px;
+  font-size: 14px;
   color: white;
   background: transparent;
   width: 100%;
@@ -947,7 +944,7 @@ legend {
 .s013 form .inner-form .input-wrap.second {
   min-width: 262px;
   border-radius: 0 3px 3px 0;
-  border-left: 1px solid #e5e5e5;
+  border-left: 6px solid wheat;
 }
 
 .s013 form .input-select {
@@ -1048,7 +1045,7 @@ legend {
 
 .s013 form .btn-search {
   min-width: 110px;
-  height: 80px;
+  height: 90px;
   padding: 0 15px;
   background: #fa4251;
   white-space: nowrap;
@@ -1081,4 +1078,7 @@ legend {
     margin: 0;
     width: 100%;
   }
+}
+.box.small{
+    height: 40px;
 }

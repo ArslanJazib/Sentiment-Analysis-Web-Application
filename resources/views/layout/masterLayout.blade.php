@@ -3,7 +3,7 @@
         @include('templates.header')
         @yield('header')
     </head>
-    <body>
+    <body id="pageBody">
         @yield('content')
         @include('templates.navbar')
         @include('templates.scripts')

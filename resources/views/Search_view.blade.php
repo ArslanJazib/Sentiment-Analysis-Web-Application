@@ -9,16 +9,25 @@
             </ul>
         </div>
     @endif
-
+    <!-- As a heading -->
+    <nav class="navbar" style="background-color: #474747">
+        <div class="container-fluid">
+            <span class="navbar-brand">Search Page</span>
+            <img class="box small" src="{{asset('assets/images/twitter.png')}}" class="img-fluid" alt="...">
+        </div>
+    </nav>
     <div class="s013">
-        <form method="get" action="{{url('/submitRequest')}}" id="searchForm">
+        <form id="searchForm">
             @csrf
             <div class="inner-form">
                 <div class="left">
                     <div class="input-wrap first">
                         <div class="input-field first">
                             <label><i class="fas fa-search fa-fw" style="color: white"></i>Topic</label>
-                            <input id="search_bar" name="searchRequest" type="text" placeholder="ex: Artificial Intelligence, Machine Learning, Python"/>
+                            <input id="search_bar" name="searchRequest" class="form-control form-control-lg" type="text"
+                                   placeholder="E.g: Artificial Intelligence, Machine Learning, Python"
+                                   aria-label=".form-control-lg example">
+
                         </div>
                     </div>
                     <div class="input-wrap second">
@@ -38,18 +47,30 @@
         </form>
     </div>
     <script>
-        {{--$('#searchForm').submit(function(e){--}}
-        {{--    e.preventDefault();--}}
-        {{--    var search_val=$('#search_bar').val();--}}
-        {{--    var mode_val=$('#mode_dropdown').val();--}}
-        {{--    $.ajax({--}}
-        {{--        type: 'GET',--}}
-        {{--        url: "{{url('/submitRequest')}}",--}}
-        {{--        data: {searchRequest : search_val,modeChoice : mode_val},--}}
-        {{--        success: function () {--}}
-        {{--            window.location.href='{{url('/visualize')}}'+"?searchRequest="+search_val;--}}
-        {{--        }--}}
-        {{--    });--}}
-        {{--});--}}
+        $(document).ready(function () {
+            $("#pageBody").css("background-image", "url('assets/images/mainPage_background.png')");
+        });
+
+        $('#searchForm').submit(function (e) {
+            e.preventDefault();
+            var search_val = $('#search_bar').val();
+            var mode_val = $('#mode_dropdown').val();
+            $("#pageBody").busyLoad("show", {
+                background: "rgba(255,255,255,0.5)",
+                image: "{{asset('assets/images/loading.gif')}}",
+                maxSize: "500px",
+            });
+            $.ajax({
+                type: 'GET',
+                url: "{{url('/submitRequest')}}",
+                data: {searchRequest: search_val, modeChoice: mode_val},
+                success: function () {
+                    window.location.href = '{{url('/visualize')}}' + "?searchRequest=" + search_val+"&modeChoice="+mode_val;
+                },
+                complete: function () {
+                    $("#pageBody").busyLoad("hide");
+                }
+            });
+        });
     </script>
 @endsection
