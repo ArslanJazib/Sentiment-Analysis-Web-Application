@@ -252,9 +252,16 @@ class Search_controller extends Controller
 
         $topicId=null;
         foreach ($topics as $current_topic){
-            if($current_topic["topic"]=="#".$request->get('searchRequest')){
-                $topicId=$current_topic["topic_id"];
-                break;
+            if ($request->get('modeChoice') === "Start-Up") {
+                if($current_topic["topic"]=="#".$request->get('searchRequest')." #StartUp"){
+                    $topicId=$current_topic["topic_id"];
+                    break;
+                }
+            } else {
+                if($current_topic["topic"]=="#".$request->get('searchRequest')){
+                    $topicId=$current_topic["topic_id"];
+                    break;
+                }
             }
         }
         $negatives = $this->tweets_model->select('sentiment')
@@ -289,7 +296,6 @@ class Search_controller extends Controller
 //            }
 //
 //        }
-
         if($request->get('modeChoice')=="Start-Up"){
             $topic_input = $request->get('searchRequest') . " & StartUp";
         }

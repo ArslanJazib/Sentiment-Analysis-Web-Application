@@ -10,10 +10,10 @@
         </div>
     @endif
     <!-- As a heading -->
-    <nav class="navbar" style="background-color: #474747">
+    <nav class="navbar" style="background-color: black">
         <div class="container-fluid">
+            <p style="font-family:'SelfDeceptionRegular';font-size: xx-large;margin-top: 0;margin-bottom: -1rem">SentiEntrepreneur</p>
             <span class="navbar-brand">Search Page</span>
-            <img class="box small" src="{{asset('assets/images/twitter.png')}}" class="img-fluid" alt="...">
         </div>
     </nav>
     <div class="s013">
@@ -46,6 +46,9 @@
             </div>
         </form>
     </div>
+    <footer class="footer">
+        <img style="margin: 0.5%" class="box small img-fluid" src="{{asset('assets/images/twitter.png')}}" alt="...">
+    </footer>
     <script>
         $(document).ready(function () {
             $("#pageBody").css("background-image", "url('assets/images/mainPage_background.png')");
@@ -55,6 +58,7 @@
             e.preventDefault();
             var search_val = $('#search_bar').val();
             var mode_val = $('#mode_dropdown').val();
+
             $("#pageBody").busyLoad("show", {
                 background: "rgba(255,255,255,0.5)",
                 image: "{{asset('assets/images/loading.gif')}}",

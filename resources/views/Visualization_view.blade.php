@@ -1,9 +1,8 @@
 @extends('layout.masterLayout')
 @section('content')
-    <nav style="border-bottom: 1px solid white !important;" class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav style="background-color:black;" class="navbar navbar-expand-lg">
         <div class="container-fluid" style="border: none">
-            <a class="navbar-brand" href="{{url('/Search')}}"><i class="fas fa-search"></i></a>
-            <span class="navbar-brand">Visualization Page</span>
+            <p style="font-family:'SelfDeceptionRegular';font-size: xx-large;margin-top: 0;margin-bottom: -1rem">SentiEntrepreneur</p>
             <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                 <ul class="navbar-nav">
                     <a style="font-weight: bold" id="popup-modal" class="btn btn-warning" href="#test-modal">Insight <i
@@ -63,10 +62,11 @@
                     </div>
                 </ul>
             </div>
-            <img class="box small" src="{{asset('assets/images/twitter.png')}}" class="img-fluid" alt="...">
+            <a class="navbar-brand" href="{{url('/Search')}}"><i class="fas fa-search"></i></a>
+            <span class="navbar-brand">Visualization Page</span>
         </div>
     </nav>
-    <div style="height: 90vh" class="container-fluid bg-dark">
+    <div style="height: 100vh" class="container-fluid">
         <div class="row">
             <div class="col-6">
                 <div class="panel panel-default">
@@ -109,6 +109,9 @@
 {{--            </div>--}}
 {{--        </div>--}}
     </div>
+    <footer class="footer">
+        <img style="margin: 0.5%" class="box small img-fluid" src="{{asset('assets/images/twitter.png')}}" alt="...">
+    </footer>
     <script>
         $(function () {
             $('#popup-modal').magnificPopup({
@@ -134,7 +137,6 @@
         $("#modebtn").click(function () {
             var search_val = "{{$sentiment['topic']}}";
             var mode_val = $("#modebtn").text();
-
             $("#pageBody").busyLoad("show", {
                 background: "rgba(255,255,255,0.5)",
                 image: "{{asset('assets/images/loading.gif')}}",
