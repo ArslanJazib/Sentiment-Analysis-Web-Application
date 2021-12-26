@@ -18,5 +18,6 @@ Route::get('/Search' , [Search_controller::class,'index']);
 Route::get('/submitRequest' , [Search_controller::class,'search_processor']);
 Route::get('/visualize' , [Search_controller::class,'visualize_data']);
 Route::get('/topicVisualizationData' , [Search_controller::class,'topic_visualize_data']);
+Route::get('/recommendations' , [Search_controller::class,'recommender']);
 
 

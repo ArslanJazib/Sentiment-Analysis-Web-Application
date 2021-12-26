@@ -57,9 +57,7 @@ class Search_controller extends Controller
 
         // If anything input is not matching the rules reload the page and display errors
         if ($validator->fails()) {
-            return redirect(url('/Search'))
-                ->withErrors($validator)
-                ->withInput();
+            return response()->json(['errors'=>$validator->errors()->all()]);
         } else {
             // Data is sent from the form via POST method
             $search = $request->get('searchRequest');
@@ -86,13 +84,13 @@ class Search_controller extends Controller
                 ->where('user_ip', '=', $request->ip())
                 ->get()
                 ->toArray();
-            $userId=$userId[0]['web_userId'];
+            $userId = $userId[0]['web_userId'];
 
             $topicId = $this->topics_model->select('topic_id')
                 ->where('web_userId', '=', $userId)
                 ->get()
                 ->toArray();
-            $topicId=$topicId[0]['topic_id'];
+            $topicId = $topicId[0]['topic_id'];
 
             // Request is sent to Twitter API
             $tweets = json_decode($this->twitter->setGetfield($getfield)
@@ -124,7 +122,7 @@ class Search_controller extends Controller
                             throw new ProcessFailedException($sentimentAnalysis_process);
                         }
                         // This function will insert data in the tweets table
-                        $this->insert_tweets_data($userId, $topicId, $tweet, $preprocessor_process, $sentimentAnalysis_process,$day);
+                        $this->insert_tweets_data($userId, $topicId, $tweet, $preprocessor_process, $sentimentAnalysis_process, $day);
                     }
                 }
             }
@@ -161,13 +159,13 @@ class Search_controller extends Controller
     public function insert_user_topic_data($request, $search)
     {
         $topic = null;
-        $userId=null;
+        $userId = null;
         if ($this->check_user($request->ip()) > 0) {
             $userId = $this->webUsers_model->select('web_userId')
                 ->where('user_ip', '=', $request->ip())
                 ->get()
                 ->toArray();
-            $userId=$userId[0]['web_userId'];
+            $userId = $userId[0]['web_userId'];
 
             $topic = $this->topics_model->select('topic')
                 ->where('web_userId', '=', $userId)
@@ -175,7 +173,7 @@ class Search_controller extends Controller
                 ->toArray();
         } else {
             $user_counter = $this->webUsers_model::max('web_userId');
-            $userId=$user_counter+1;
+            $userId = $user_counter + 1;
             // Inserting data in the website_users table
             $this->webUsers_model->insert([
                 [
@@ -196,14 +194,14 @@ class Search_controller extends Controller
                 ],
             ]);
         } else {
-            $flag=false;
-            foreach ($topic as $current_topic){
-                if($current_topic["topic"]==$search){
-                    $flag=true;
+            $flag = false;
+            foreach ($topic as $current_topic) {
+                if ($current_topic["topic"] == $search) {
+                    $flag = true;
                     break;
                 }
             }
-            if($flag!=true){
+            if ($flag != true) {
                 $topic_counter = $this->topics_model::max('topic_id');
                 // Inserting data in the topics table
                 $this->topics_model->insert([
@@ -217,7 +215,7 @@ class Search_controller extends Controller
         }
     }
 
-    public function insert_tweets_data($userId, $topicId, $tweet, $preprocessor_process, $sentimentAnalysis_process,$day)
+    public function insert_tweets_data($userId, $topicId, $tweet, $preprocessor_process, $sentimentAnalysis_process, $day)
     {
         // Using the max value to increment the tweet
         $tweets_counter = $this->tweets_model::max('id');
@@ -243,23 +241,23 @@ class Search_controller extends Controller
             ->where('user_ip', '=', $request->ip())
             ->get()
             ->toArray();
-        $userId=$userId[0]['web_userId'];
+        $userId = $userId[0]['web_userId'];
 
-        $topics = $this->topics_model->select('topic_id','topic')
+        $topics = $this->topics_model->select('topic_id', 'topic')
             ->where('web_userId', '=', $userId)
             ->get()
             ->toArray();
 
-        $topicId=null;
-        foreach ($topics as $current_topic){
+        $topicId = null;
+        foreach ($topics as $current_topic) {
             if ($request->get('modeChoice') === "Start-Up") {
-                if($current_topic["topic"]=="#".$request->get('searchRequest')." #StartUp"){
-                    $topicId=$current_topic["topic_id"];
+                if ($current_topic["topic"] == "#" . $request->get('searchRequest') . " #StartUp") {
+                    $topicId = $current_topic["topic_id"];
                     break;
                 }
             } else {
-                if($current_topic["topic"]=="#".$request->get('searchRequest')){
-                    $topicId=$current_topic["topic_id"];
+                if ($current_topic["topic"] == "#" . $request->get('searchRequest')) {
+                    $topicId = $current_topic["topic_id"];
                     break;
                 }
             }
@@ -296,15 +294,14 @@ class Search_controller extends Controller
 //            }
 //
 //        }
-        if($request->get('modeChoice')=="Start-Up"){
+        if ($request->get('modeChoice') == "Start-Up") {
             $topic_input = $request->get('searchRequest') . " & StartUp";
-        }
-        else{
-            $topic_input=$request->get('searchRequest');
+        } else {
+            $topic_input = $request->get('searchRequest');
         }
 //        $sentiment = array("daySentiment"=>$day_Sentiment,"previousTopics"=>$topics,"total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic_input, "mode" => $request->get('modeChoice'));
 
-        $sentiment = array("previousTopics"=>$topics,"total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic_input, "mode" => $request->get('modeChoice'));
+        $sentiment = array("previousTopics" => $topics, "total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic_input, "mode" => $request->get('modeChoice'));
         return view('Visualization_view', ['sentiment' => $sentiment]);
     }
 
@@ -314,20 +311,20 @@ class Search_controller extends Controller
             ->where('user_ip', '=', $request->ip())
             ->get()
             ->toArray();
-        $userId=$userId[0]['web_userId'];
+        $userId = $userId[0]['web_userId'];
 
-        $topics = $this->topics_model->select('topic','topic_id')
+        $topics = $this->topics_model->select('topic', 'topic_id')
             ->where('web_userId', '=', $userId)
             ->get()
             ->toArray();
 
-        $topicId=$request->get('topicChoice');
+        $topicId = $request->get('topicChoice');
         $topic = $this->topics_model->select('topic')
             ->where('topic_id', '=', $topicId)
             ->get()
             ->toArray();
-        $topic=$topic[0]['topic'];
-        $topic=ltrim($topic, $topic[0]);
+        $topic = $topic[0]['topic'];
+        $topic = ltrim($topic, $topic[0]);
 
         $negatives = $this->tweets_model->select('sentiment')
             ->where('sentiment', '=', 0)
@@ -367,19 +364,48 @@ class Search_controller extends Controller
 //            }
 //        }
 
-        if($request->get('modeChoice')=="Start-Up"){
+        if ($request->get('modeChoice') == "Start-Up") {
             $topic_input = $request->get('searchRequest') . " & StartUp";
-        }
-        else{
-            $topic_input=$request->get('searchRequest');
+        } else {
+            $topic_input = $request->get('searchRequest');
         }
 
 //        $sentiment = array("daySentiment"=>$day_Sentiment,"previousTopics"=>$topics,"total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic, "mode" => $request->get('modeChoice'));
-        $sentiment = array("previousTopics"=>$topics,"total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic, "mode" => $request->get('modeChoice'));
+        $sentiment = array("previousTopics" => $topics, "total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic, "mode" => $request->get('modeChoice'));
 
         return view('Visualization_view', ['sentiment' => $sentiment]);
     }
 
+    public function recommender()
+    {
+        // Twitter Search API URL
+        $url = "https://api.twitter.com/1.1/search/tweets.json";
+        // Request parameters are via GET method to Twitter API
+        $requestMethod = "GET";
+        // Search Parameter with language as English and total count as 10
+        $getfield = "?q=#StartUp&lang=en&count=10";
+
+        // Request is sent to Twitter API
+        $tweets = json_decode($this->twitter->setGetfield($getfield)
+            ->buildOauth($url, $requestMethod)
+            ->performRequest());
+        //Twitter API Exception
+
+        // Array is filled with all hashtags in 10 tweets
+        $recommendations=[];
+        foreach ($tweets as $tweets_obj) {
+            foreach ($tweets_obj as $tweet) {
+                if(isset($tweet->entities)){
+                    foreach ($tweet->entities->hashtags as $hashtag) {
+                        if (!in_array($hashtag->text, $recommendations)){
+                            array_push($recommendations,$hashtag->text);
+                        }
+                    }
+                }
+            }
+        }
+        return ($recommendations);
+    }
 }
 
 ?>

@@ -865,21 +865,9 @@ legend {
 }
 
 .s013 {
-    min-height: 79vh;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -ms-flex-align: center;
-    align-items: center;
-    padding: 15px;
-    font-family: 'Poppins', sans-serif;
-}
-
-.s013 form {
-    width: 100%;
-    max-width: 914px;
-    margin: 0;
+    margin: auto;
+    width: 70%;
+    padding: 10px;
 }
 
 
@@ -951,13 +939,14 @@ legend {
 }
 
 .s013 form .inner-form .input-wrap.first {
+    min-width: 375px;
     -ms-flex-positive: 1;
     flex-grow: 1;
     border-radius: 3px 0 0 3px;
 }
 
 .s013 form .inner-form .input-wrap.second {
-    min-width: 262px;
+    min-width: 220px;
     border-radius: 0 3px 3px 0;
     border-left: 6px solid wheat;
 }
@@ -1059,7 +1048,6 @@ legend {
 }
 
 .s013 form .btn-search {
-    min-width: 110px;
     height: 90px;
     padding: 0 15px;
     background: darkred;

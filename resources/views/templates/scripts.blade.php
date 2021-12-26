@@ -9,4 +9,7 @@
             });
     </script>
     <!-- /Search Bar Options -->
+
+    <script src="{{ asset('assets/js/sidebar.js') }}"></script>
+
 @endsection
