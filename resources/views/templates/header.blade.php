@@ -17,6 +17,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <!-- Sidebar -->
     <link rel="stylesheet" href="{{ asset('assets/css/sidebar.css') }}">
+    <!-- Footer -->
+    <link type="text/css" rel="stylesheet" href="{{ asset('assets/css/footer.css') }}">
     <!-- chartjs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
     <!-- busyload plugin -->

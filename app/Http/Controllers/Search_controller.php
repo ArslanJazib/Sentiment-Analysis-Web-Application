@@ -274,34 +274,58 @@ class Search_controller extends Controller
             ->where('web_userId', '=', $userId)
             ->get();
 
-//        $days=array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
-//        $day_Sentiment=array("Mon"=>0,"Tue"=>0,"Wed"=>0,"Thu"=>0,"Fri"=>0,"Sat"=>0,"Sun"=>0);
-//        foreach ($days as $day){
-//            $daypositives = count($this->tweets_model->select('*')
-//                ->where('sentiment', '=', 1)
-//                ->where('topic_id', '=', $topicId)
-//                ->where('web_userId', '=', $userId)
-//                ->where('day', '=', $day)
-//                ->get());
-//            $daynegatives = count($this->tweets_model->select('*')
-//                ->where('sentiment', '=', 0)
-//                ->where('topic_id', '=', $topicId)
-//                ->where('web_userId', '=', $userId)
-//                ->where('day', '=', $day)
-//                ->get());
-//            if($daypositives>$daynegatives){
-//                $day_Sentiment[$day]=1;
-//            }
-//
-//        }
+        //$days=array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
+        $day_Sentiment=array("Mon"=>0,"Tue"=>0,"Wed"=>0,"Thu"=>0,"Fri"=>0,"Sat"=>0,"Sun"=>0);
+        $days_found = $this->tweets_model->select('day')
+            ->groupBy('day')
+            ->get()->toArray();
+        $days_found = array_column($days_found, 'day');
+        //dd($days_found);
+        //dd(typeOf($days_found));
+        foreach ($day_Sentiment as $day => $day_overall_sentiment)
+        {
+            if (in_array($day, $days_found))
+            {
+                $day_positives = count($this->tweets_model->select('*')
+                    ->where('sentiment', '=', 1)
+                    ->where('topic_id', '=', $topicId)
+                    ->where('web_userId', '=', $userId)
+                    ->where('day', '=', $day)
+                    ->get());
+
+                $day_negatives = count($this->tweets_model->select('*')
+                    ->where('sentiment', '=', 0)
+                    ->where('topic_id', '=', $topicId)
+                    ->where('web_userId', '=', $userId)
+                    ->where('day', '=', $day)
+                    ->get());
+                //dd($day_negatives);
+                if($day_positives >= $day_negatives){
+                    // 2 for positive
+                    $day_Sentiment[$day]=2;
+                }
+                else{
+                    // 1 for negative
+                    $day_Sentiment[$day]=1;
+
+                }
+            }
+            else{
+                // 0 for neutral
+                $day_Sentiment[$day]=0;
+
+            }
+
+        }
+
         if ($request->get('modeChoice') == "Start-Up") {
             $topic_input = $request->get('searchRequest') . " & StartUp";
         } else {
             $topic_input = $request->get('searchRequest');
         }
-//        $sentiment = array("daySentiment"=>$day_Sentiment,"previousTopics"=>$topics,"total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic_input, "mode" => $request->get('modeChoice'));
+        $sentiment = array("daySentiment"=>$day_Sentiment,"previousTopics"=>$topics,"total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic_input, "mode" => $request->get('modeChoice'));
 
-        $sentiment = array("previousTopics" => $topics, "total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic_input, "mode" => $request->get('modeChoice'));
+        //$sentiment = array("previousTopics" => $topics, "total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic_input, "mode" => $request->get('modeChoice'));
         return view('Visualization_view', ['sentiment' => $sentiment]);
     }
 

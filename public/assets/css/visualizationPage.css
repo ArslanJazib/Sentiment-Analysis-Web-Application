@@ -5,4 +5,13 @@
 .container-fluid{
     color: white;
 }
-
+ol, ul {
+    padding-left: 1rem;
+}
+#modeIcon{
+    height: 30px;
+}
+#topicIcon{
+    height: 20px;
+    margin-left: 4px;
+}

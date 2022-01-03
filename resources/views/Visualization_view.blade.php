@@ -1,116 +1,226 @@
 @extends('layout.masterLayout')
 @section('content')
-    <nav style="background-color:black;" class="navbar navbar-expand-lg">
-        <div class="container-fluid" style="border: none">
-            <p style="font-family:'SelfDeceptionRegular';font-size: xx-large;margin-top: 0;margin-bottom: -1rem">SentiEntrepreneur</p>
-            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
-                <ul class="navbar-nav">
-                    <a style="font-weight: bold" id="popup-modal" class="btn btn-warning" href="#test-modal">Insight <i
-                            class="fas fa-lightbulb"></i></a>
-                    <div id="test-modal" class="white-popup-block mfp-hide">
-                        <h1>
-                            @if ($sentiment['total_positives']>$sentiment['total_negatives'])
-                                Sentiment is Positive for {{$sentiment['topic']}}
-                                <i style="color: gold" class="fas fa-smile"></i>
-                            @elseif ($sentiment['total_positives']<$sentiment['total_negatives'])
-                                Sentiment is Negative for {{$sentiment['topic']}}
-                                <i style="color: lightblue" class="fas fa-frown-open"></i>
-                            @else
-                                Sentiment cannot be determined for {{$sentiment['topic']}}
-                            @endif
-                        </h1>
-                        <p>
-                            @if ($sentiment['total_positives']>$sentiment['total_negatives'])
-                                You should invest in business ventures involving {{$sentiment['topic']}}
-                            @elseif ($sentiment['total_positives']<$sentiment['total_negatives'])
-                                You should not invest in business ventures involving {{$sentiment['topic']}}
-                            @else
-                                Sentiment is inconclusive
-                            @endif
-                        </p>
-                        <p><a class="btn btn-danger popup-modal-dismiss" href="#">Close</a></p>
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-3">
+                    <img style="margin: 0.5%" class="box small img-fluid" src="{{asset('assets/images/FYPLogo.png')}}"
+                         alt="...">
+                    <p style="display:inline;font-family:'SelfDeceptionRegular';font-size: xx-large;margin-top: 0;margin-bottom: -1rem">
+                        SentiEntrepreneur</p>
+                </div>
+                <div style="text-align: end;" class="col-9">
+                    <span class="navbar-brand">Visualization Page</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="wrapper d-flex align-items-stretch">
+        <nav style="min-width: 180px;max-width: 180px" id="sidebar">
+            <div class="custom-menu">
+                <button type="button" id="visualsidebarCollapse" class="btn btn-primary">
+                    <i style="color: black" class="fas fa-lightbulb"></i>
+                    <span class="sr-only">Toggle Menu</span>
+                </button>
+            </div>
+            <div>
+                <ul class="list-unstyled components mb-5">
+                    <!-- Insight-->
+                    <li class="active">
+                        <!-- Insight Modal Anchor Tag -->
+                        <a class="dashTool" style="color:white;font-weight: bold" id="popup-modal" href="#test-modal">
+                            <div class="row">
+                                <div class="col-1">
+                                    <i style="color:yellow " class="fas fa-lightbulb fa-fw fa-lg"></i>
+                                </div>
+                                <div class="col">
+                                    <span>Insight</span>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- Insight Modal -->
+                        <div id="test-modal" class="white-popup-block mfp-hide">
+                            <h1>
+                                @if ($sentiment['total_positives']>$sentiment['total_negatives'])
+                                    Sentiment is Positive for {{$sentiment['topic']}}
+                                    <i style="color: gold" class="fas fa-smile"></i>
+                                @elseif ($sentiment['total_positives']<$sentiment['total_negatives'])
+                                    Sentiment is Negative for {{$sentiment['topic']}}
+                                    <i style="color: lightblue" class="fas fa-frown-open"></i>
+                                @else
+                                    Sentiment cannot be determined for {{$sentiment['topic']}}
+                                @endif
+                            </h1>
+                            <p>
+                                @if ($sentiment['total_positives']>$sentiment['total_negatives'])
+                                    You should invest in business ventures involving {{$sentiment['topic']}}
+                                @elseif ($sentiment['total_positives']<$sentiment['total_negatives'])
+                                    You should not invest in business ventures involving {{$sentiment['topic']}}
+                                @else
+                                    Sentiment is inconclusive
+                                @endif
+                            </p>
+                            <p><a class="btn btn-danger popup-modal-dismiss" href="#">Close</a></p>
+                        </div>
+                    </li>
+                    <!-- Mode -->
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        <div class="accordion-item">
+                            <span class="accordion-header" id="flush-headingOne">
+                                <a class="accordion" type="button" data-bs-toggle="collapse"
+                                   data-bs-target="#flush-collapseOne" aria-expanded="false"
+                                   aria-controls="flush-collapseOne">
+                                    <div class="row">
+                                        <div class="col-1">
+                                            <img id="modeIcon"
+                                                 src="{{asset('assets/images/modeIcon.png')}}"
+                                                 alt="...">
+                                        </div>
+                                        <div class="col">
+                                            <span>
+                                                Modes
+                                            </span>
+                                        </div>
+                                        <div style="text-align: end" class="col">
+                                            <span>
+                                                <i class="fa fa-caret-down" style="color:lightseagreen"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </span>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse"
+                                 aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <ul class="list">
+                                        <li class="list-item">
+                                            <a id="generalTag" class="dashTool">
+                                                <img style="margin: 0.5%" class="box small img-fluid"
+                                                     src="{{asset('assets/images/group.png')}}" alt="...">
+                                                General
+                                            </a>
+                                        </li>
+                                        <li class="list-item">
+                                            <a id="startupTag" class="dashTool">
+                                                <img style="margin: 0.5%" class="box small img-fluid"
+                                                     src="{{asset('assets/images/enterpreneur.png')}}" alt="...">
+                                                Start-Up
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div style="margin-left: 10px" class="btn-group">
-                        <button style="color: black;font-weight: bold" id="modebtn" type="button"
-                                class="btn btn-primary">{{$sentiment['mode']}}</button>
-                        <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <ul id="modeList" class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">General</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Start-Up</a></li>
-                        </ul>
-                    </div>
-                    <div style="margin-left: 10px" class="btn-group">
-                        <button style="color: black;font-weight: bold" id="topicbtn" type="button"
-                                class="btn btn-success">{{"#".$sentiment['topic']}}
-                        </button>
-                        <button style="background-color: darkgreen" type="button"
-                                class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                            <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <ul id="topicList" class="dropdown-menu">
-                            @foreach ($sentiment['previousTopics'] as $topic)
-                                <li><a class="dropdown-item" href="{{url('/topicVisualizationData').'?searchRequest=' . $sentiment['topic'] . "&topicChoice=" . $topic['topic_id']."&modeChoice=" . $sentiment['mode']}}">{{$topic['topic']}}</a></li>
-                            @endforeach
-                        </ul>
+                    <!-- Topics -->
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        <div class="accordion-item">
+                            <span class="accordion-header" id="flush-headingOne">
+                                <a class="accordion" type="button"
+                                   data-bs-toggle="collapse"
+                                   data-bs-target="#flush-collapseTwo"
+                                   aria-expanded="false"
+                                   aria-controls="flush-collapseTwo">
+                                    <div class="row">
+                                        <div class="col-1">
+                                            <img id="topicIcon"
+                                                 src="{{asset('assets/images/hashtag.png')}}"
+                                                 alt="...">
+                                        </div>
+                                        <div class="col">
+                                            <span>
+                                                Topics
+                                            </span>
+                                        </div>
+                                        <div style="text-align: end;" class="col">
+                                            <span style="padding-left: 10px">
+                                                <i class="fa fa-caret-down" style="color:lightseagreen"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </span>
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                                 aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <ul id="topicList" class="list">
+                                        @foreach ($sentiment['previousTopics'] as $topic)
+                                            <li>
+                                                <a class="dashTool"
+                                                   href="{{url('/topicVisualizationData').'?searchRequest=' . $sentiment['topic'] . "&topicChoice=" . $topic['topic_id']."&modeChoice=" . $sentiment['mode']}}">{{$topic['topic']}}</a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </ul>
             </div>
-            <a class="navbar-brand" href="{{url('/Search')}}"><i class="fas fa-search"></i></a>
-            <span class="navbar-brand">Visualization Page</span>
+        </nav>
+        <!-- visualizations -->
+        <div id="graphs" style="margin-left: 3%" class="container-fluid">
+            <div class="row">
+                <div class="col-6">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <canvas id="canvas" height="250" width="600"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <canvas id="area_canvas" height="250" width="600"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <canvas id="pie_canvas" height="250" width="600"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <canvas id="polar_canvas" height="250" width="600"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <canvas id="line_canvas" height="250" width="600px"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </nav>
-    <div style="height: 100vh" class="container-fluid">
-        <div class="row">
-            <div class="col-6">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <canvas id="canvas" height="250" width="600"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <canvas id="area_canvas" height="250" width="600"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <canvas id="pie_canvas" height="250" width="600"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <canvas id="polar_canvas" height="250" width="600"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-{{--        <div class="row">--}}
-{{--            <div class="col-12">--}}
-{{--                <div class="panel panel-default">--}}
-{{--                    <div class="panel-body">--}}
-{{--                        <canvas id="line_canvas" height="250" width="600px"></canvas>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
     </div>
-    <footer class="footer">
-        <img style="margin: 0.5%" class="box small img-fluid" src="{{asset('assets/images/twitter.png')}}" alt="...">
+    <footer class="footer-14398">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <img style="margin: 0.5%" class="box small img-fluid" src="{{asset('assets/images/FYPLogo.png')}}"
+                         alt="...">
+                    <p style=" display:inline;font-family:'SelfDeceptionRegular';font-size: xx-large;margin-top: 0;margin-bottom: -1rem">
+                        SentiEntrepreneur
+                    </p>
+                    <p style="color: #777">See what people are feeling on the topic of your choice.</p>
+                </div>
+                <div style="text-align: end;" class="col-md-2 ml-auto">
+                    <p>Powered By</p>
+                    <img style="margin: 0.5%" class="box small img-fluid" src="{{asset('assets/images/twitter.png')}}"
+                         alt="...">
+                </div>
+            </div>
+        </div>
     </footer>
     <script>
         $(function () {
@@ -131,6 +241,22 @@
             $("#topicList li a").click(function () {
                 $("#topicbtn:first-child").text($(this).text());
                 $("#topicbtn:first-child").val($(this).text());
+            });
+            if ("{{$sentiment['mode']}}" === "General") {
+                $("#generalTag").css("color", "yellow");
+            } else if ("{{$sentiment['mode']}}" === "StartUp") {
+                $("#startupTag").css("color", "yellow");
+            }
+            $("#currentTopic").css("color", "yellow");
+
+            var listItems = $("#topicList li");
+            listItems.each(function (idx, li) {
+                var product = $(li);
+                var anchorTag = (product.find("a"));
+                var text = anchorTag.text();
+                if (text === "#{{$sentiment['topic']}}") {
+                    anchorTag.css("color", "yellow");
+                }
             });
         });
 
@@ -160,14 +286,14 @@
             datasets: [
                 {
                     label: 'Bar Chart',
-                    backgroundColor: ['rgba(255,99,132,0.2)', 'rgba(0, 195, 71,0.2)'],
-                    borderColor: ['rgba(255,99,132,1)', 'rgba(0, 195, 71,1)'],
+                    backgroundColor: ['rgba(0, 195, 71,0.5)', 'rgba(139,0,0,0.5)'],
+                    borderColor: ['rgba(0, 195, 71,1)', 'rgba(139,0,0,1)'],
                     borderWidth: 1,
                     hoverBackgroundColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(0, 195, 71,1)'
+                        'rgba(0, 195, 71,1)',
+                        'rgba(139,0,0,1)'
                     ],
-                    hoverBorderColor: ['rgba(255,99,132,1)', 'rgba(0, 195, 71,0.4)'],
+                    hoverBorderColor: ['rgba(0, 195, 71,1)', 'rgba(139,0,0,1)'],
                     borderCapStyle: 'round',
                     data: [{{ $sentiment['total_positives'] }}, {{ $sentiment['total_negatives'] }}]
                 }
@@ -181,19 +307,19 @@
                     borderWidth: 1,
                     fill: true,
                     lineTension: 0.1,
-                    backgroundColor: ['rgba(255,99,132,0.2)', 'rgba(0, 195, 71,0.2)'],
-                    borderColor: 'rgba(0, 195, 71,1)',
+                    backgroundColor: ['rgba(255,201,0,0.5)'],
+                    borderColor: 'rgba(0, 0, 0,1)',
                     borderCapStyle: 'round',
                     borderDash: [],
                     borderDashOffset: 0.0,
                     borderJoinStyle: 'miter',
-                    pointBorderColor: ['#ffffff', '#ffffff'],
-                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: ['rgba(0, 195, 71,1)', 'rgba(139,0,0,1)'],
+                    pointBackgroundColor: ['rgba(0, 195, 71,1)', 'rgba(139,0,0,1)'],
                     hoverBackgroundColor: ['rgba(0, 195, 71,1)'],
                     pointBorderWidth: 3,
                     pointHoverRadius: 10,
-                    pointHoverBackgroundColor: ['rgba(255,99,132,1)', 'rgba(0, 195, 71,1)'],
-                    pointHoverBorderColor: ['rgba(255,99,132,1)', 'rgba(0, 195, 71,1)'],
+                    pointHoverBackgroundColor:  ['rgba(0, 195, 71,0.5)', 'rgba(139,0,0,0.5)'],
+                    pointHoverBorderColor: ['rgba(0, 195, 71,1)', 'rgba(139,0,0,1)'],
                     pointHoverBorderWidth: 2,
                     pointRadius: 2,
                     pointHitRadius: 10,
@@ -206,13 +332,14 @@
             datasets: [{
                 data: [{{ $sentiment['total_positives'] }}, {{ $sentiment['total_negatives'] }}],
                 backgroundColor: [
-                    'rgba(255,99,132,0.2)',
-                    'rgba(0, 195, 71,0.2)'
+                    'rgba(0, 195, 71,0.5)',
+                    'rgba(139,0,0,0.5)'
                 ],
                 hoverBackgroundColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(0, 195, 71,1)'
+                    'rgba(0, 195, 71,1)',
+                    'rgba(139,0,0,1)'
                 ],
+                borderColor: ['rgba(0, 195, 71,1)', 'rgba(139,0,0,1)'],
             }]
         };
         var polarChartData = {
@@ -220,49 +347,56 @@
             datasets: [
                 {
                     backgroundColor: [
-                        'rgba(255,99,132,0.2)',
-                        'rgba(0, 195, 71,0.2)'
+                        'rgba(0, 195, 71,0.5)',
+                        'rgba(139,0,0,0.5)'
                     ],
                     borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(0, 195, 71,1)'
+                        'rgba(0, 195, 71,1)',
+                        'rgba(139,0,0,1)'
                     ],
                     hoverBackgroundColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(0, 195, 71,1)'
+                        'rgba(0, 195, 71,1)',
+                        'rgba(139,0,0,1)'
                     ],
                     data: [{{ $sentiment['total_positives'] }}, {{ $sentiment['total_negatives'] }}]
                 }
             ]
         }
-        {{--var lineChartData = {--}}
-        {{--    labels: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],--}}
-        {{--    datasets: [--}}
-        {{--        {--}}
-        {{--            backgroundColor: [--}}
-        {{--                'rgba(255,99,132,0.2)',--}}
-        {{--                'rgba(0, 195, 71,0.2)'--}}
-        {{--            ],--}}
-        {{--            borderColor: [--}}
-        {{--                'rgba(255,99,132,1)',--}}
-        {{--                'rgba(0, 195, 71,1)'--}}
-        {{--            ],--}}
-        {{--            hoverBackgroundColor: [--}}
-        {{--                'rgba(255,99,132,1)',--}}
-        {{--                'rgba(0, 195, 71,1)'--}}
-        {{--            ],--}}
-        {{--            data: [--}}
-        {{--                {{ $sentiment['daySentiment']['Mon'] }},--}}
-        {{--                {{ $sentiment['daySentiment']['Tue'] }},--}}
-        {{--                {{ $sentiment['daySentiment']['Wed'] }},--}}
-        {{--                {{ $sentiment['daySentiment']['Thu'] }},--}}
-        {{--                {{ $sentiment['daySentiment']['Fri'] }},--}}
-        {{--                {{ $sentiment['daySentiment']['Sat'] }},--}}
-        {{--                {{ $sentiment['daySentiment']['Sun'] }}--}}
-        {{--            ]--}}
-        {{--        }--}}
-        {{--    ]--}}
-        {{--}--}}
+        var lineChartData = {
+            labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            datasets: [
+                {
+                    label: 'Timeline 0:Neutral, 1:Negative, 2:Positive',
+                    backgroundColor: [
+                        'rgba(255,201,0,0.5)',
+                    ],
+                    borderColor: [
+                        'rgba(0,0,0,1)',
+                    ],
+
+                    pointBorderColor: 'rgba(255,99,132,1)',
+                    pointBackgroundColor: 'rgba(255,99,132,0.5)',
+                    hoverBackgroundColor:'rgba(255,99,132,0.5)',
+                    pointBorderWidth: 3,
+                    pointHoverRadius: 10,
+                    pointHoverBackgroundColor: 'rgba(255,99,132,0.5)',
+                    pointHoverBorderColor: 'rgba(255,99,132,1)',
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 2,
+                    pointHitRadius: 10,
+                    data: [
+                        {{ $sentiment['daySentiment']['Mon'] }},
+                        {{ $sentiment['daySentiment']['Tue'] }},
+                        {{ $sentiment['daySentiment']['Wed'] }},
+                        {{ $sentiment['daySentiment']['Thu'] }},
+                        {{ $sentiment['daySentiment']['Fri'] }},
+                        {{ $sentiment['daySentiment']['Sat'] }},
+                        {{ $sentiment['daySentiment']['Sun'] }}
+                    ]
+                }
+            ]
+        }
+
         window.onload = function () {
             var ctx = document.getElementById("canvas").getContext("2d");
             window.myBar = new Chart(ctx, {
@@ -277,22 +411,22 @@
                 options: {
                     legend: {
                         labels: {
-                            fontColor: "white"
+                            fontColor: "black"
                         }
                     },
                     scales: {
                         yAxes: [{
                             ticks: {
-                                fontColor: "white",
+                                fontColor: "black",
                                 beginAtZero: true
                             }
                         }],
                         xAxes: [{
                             ticks: {
-                                fontColor: "white",
+                                fontColor: "black",
                             },
                             gridLines: {
-                                color: 'rgba(255,255,255,1)',
+                                color: 'rgba(0,0,0,1)',
                                 lineWidth: 1
                             }
                         }]
@@ -313,23 +447,23 @@
                 options: {
                     legend: {
                         labels: {
-                            fontColor: "white"
+                            fontColor: "black"
                         }
                     },
                     scales: {
                         yAxes: [{
                             ticks: {
-                                fontColor: "white",
+                                fontColor: "black",
                                 beginAtZero: true
                             },
                             gridLines: {
-                                color: 'rgba(255,255,255,1)',
+                                color: 'rgba(0,0,0,1)',
                                 lineWidth: 1
                             }
                         }],
                         xAxes: [{
                             ticks: {
-                                fontColor: "white",
+                                fontColor: "black",
                             }
                         }]
                     }
@@ -349,7 +483,7 @@
                 options: {
                     legend: {
                         labels: {
-                            fontColor: "white"
+                            fontColor: "black"
                         }
                     },
                     scales: {
@@ -363,7 +497,7 @@
                                 display: false
                             },
                             gridLines: {
-                                color: 'rgba(255,255,255,1)',
+                                color: 'rgba(0,0,0,1)',
                                 lineWidth: 1
                             }
                         }]
@@ -383,7 +517,7 @@
                 options: {
                     legend: {
                         labels: {
-                            fontColor: "white"
+                            fontColor: "black"
                         }
                     },
                     scales: {
@@ -397,57 +531,63 @@
                                 display: false
                             },
                             gridLines: {
-                                color: 'rgba(255,255,255,1)',
+                                color: 'rgba(0,0,0,1)',
                                 lineWidth: 1
                             }
                         }],
                         r: {
                             grid: {
-                                color: 'rgba(255,255,255,1)'
+                                color: 'rgba(0,0,0,1)'
                             }
                         }
                     }
                 }
             });
-            // var ctx5 = document.getElementById("line_canvas").getContext("2d");
-            // window = new Chart(ctx5, {
-            //     type: 'line',
-            //     data: lineChartData,
-            //     responsive: true,
-            //     maintainAspectRatio: true,
-            //     title: {
-            //         display: true,
-            //         text: 'Line Chart'
-            //     },
-            //     options: {
-            //         legend: {
-            //             labels: {
-            //                 fontColor: "white"
-            //             }
-            //         },
-            //         scales: {
-            //             yAxes: [{
-            //                 ticks: {
-            //                     display: false
-            //                 }
-            //             }],
-            //             xAxes: [{
-            //                 ticks: {
-            //                     display: false
-            //                 },
-            //                 gridLines: {
-            //                     color: 'rgba(255,255,255,1)',
-            //                     lineWidth: 1
-            //                 }
-            //             }],
-            //             r: {
-            //                 grid: {
-            //                     color: 'rgba(255,255,255,1)'
-            //                 }
-            //             }
-            //         }
-            //     }
-            // });
+            var ctx5 = document.getElementById("line_canvas").getContext("2d");
+            window = new Chart(ctx5, {
+                type: 'line',
+                data: lineChartData,
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: true,
+                    text: 'Line Chart'
+                },
+                options: {
+                    legend: {
+                        labels: {
+                            fontColor: "black"
+                        }
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 2,
+                                stepSize: 1,
+                                fontColor: "black",
+                                display: true
+                            }
+                        }],
+                        xAxes: [{
+
+                            ticks: {
+                                fontColor: "black",
+                                display: true
+                            },
+                            gridLines: {
+                                color: 'rgba(0,0,0,1)',
+                                lineWidth: 1
+                            }
+                        }],
+                        r: {
+                            grid: {
+                                color: 'rgba(0,0,0,1)'
+                            }
+                        }
+                    }
+                }
+            });
         };
     </script>
 @endsection

@@ -886,7 +886,7 @@ legend {
 }
 
 .s013 form .inner-form .input-wrap {
-    background: black;
+    background: #191A19;
     height: 90px;
     position: relative;
     padding: 20px 25px 20px 25px;
@@ -1050,7 +1050,7 @@ legend {
 .s013 form .btn-search {
     height: 90px;
     padding: 0 15px;
-    background: darkred;
+    background: #117da8;
     white-space: nowrap;
     border-radius: 3px;
     font-size: 16px;
@@ -1064,7 +1064,7 @@ legend {
 }
 
 .s013 form .btn-search:hover {
-    background: #f9293a;
+    background: #00acee;
 }
 
 @media screen and (max-width: 767px) {
@@ -1104,9 +1104,18 @@ body {
     background-size: cover;
 
     /* Pick a solid background color that will be displayed while the background image is loading */
-    background-color:#464646;
+    background-color:whitesmoke;
 
     /* SHORTHAND CSS NOTATION
      * background: url(background-photo.jpg) center center cover no-repeat fixed;
      */
+}
+#cancel-button{
+    border-color:white;
+    border-radius: 20%;
+    background-color: darkred;
+    display:none;
+}
+#cancel-button:hover {
+    background: #f9293a;
 }

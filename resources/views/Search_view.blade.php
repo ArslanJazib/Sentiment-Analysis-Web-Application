@@ -1,14 +1,25 @@
 @extends('layout.masterLayout')
 @section('content')
     <!-- As a heading -->
-    <nav class="navbar" style="height:10vh;background-color: black">
+    <nav class="navbar">
         <div class="container-fluid">
-            <p style="font-family:'SelfDeceptionRegular';font-size: xx-large;margin-top: 0;margin-bottom: -1rem">
-                SentiEntrepreneur</p>
-            <span class="navbar-brand">Search Page</span>
+            <div class="row">
+                <div class="col-3">
+                    <img style="margin: 0.5%" class="box small img-fluid" src="{{asset('assets/images/FYPLogo.png')}}"
+                         alt="...">
+                    <p style="display:inline;font-family:'SelfDeceptionRegular';font-size: xx-large;margin-top: 0;margin-bottom: -1rem">
+                        SentiEntrepreneur</p>
+                </div>
+                <div style="text-align: end;" class="col-9">
+                    <button id="cancel-button" type="button" class="btn btn-danger btn-lg ml-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <span class="navbar-brand">Search Page</span>
+                </div>
+            </div>
         </div>
     </nav>
-    <div style="height: 80vh" class="wrapper d-flex align-items-stretch">
+    <div id="div_for_cancel_button" style="height: 80vh" class="wrapper d-flex align-items-stretch">
         <nav id="sidebar">
             <div class="custom-menu">
                 <button type="button" id="sidebarCollapse" class="btn btn-primary">
@@ -59,8 +70,24 @@
             </form>
         </div>
     </div>
-    <footer style="height: 10vh" class="footer">
-        <img style="margin: 0.5%" class="box small img-fluid" src="{{asset('assets/images/twitter.png')}}" alt="...">
+    <footer class="footer-14398">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <img style="margin: 0.5%" class="box small img-fluid" src="{{asset('assets/images/FYPLogo.png')}}"
+                         alt="...">
+                    <p style=" display:inline;font-family:'SelfDeceptionRegular';font-size: xx-large;margin-top: 0;margin-bottom: -1rem">
+                        SentiEntrepreneur
+                    </p>
+                    <p style="color: #777">See what people are feeling on the topic of your choice.</p>
+                </div>
+                <div style="text-align: end;" class="col-md-2 ml-auto">
+                    <p>Powered By</p>
+                    <img style="margin: 0.5%" class="box small img-fluid" src="{{asset('assets/images/twitter.png')}}"
+                         alt="...">
+                </div>
+            </div>
+        </div>
     </footer>
     <script>
         $(document).ready(function () {
@@ -82,17 +109,22 @@
             $("#search_bar").val(($(this).text().substring(1)));
         });
 
+        var ajax_request;
+
         $('#searchForm').submit(function (e) {
             e.preventDefault();
             var search_val = $('#search_bar').val();
             var mode_val = $('#mode_dropdown').val();
 
-            $("#pageBody").busyLoad("show", {
+            document.getElementById('cancel-button').style.display = 'inline-block';
+
+            $("#div_for_cancel_button").busyLoad("show", {
                 background: "rgba(255,255,255,0.5)",
                 image: "{{asset('assets/images/loading.gif')}}",
                 maxSize: "500px",
             });
-            $.ajax({
+
+            ajax_request = $.ajax({
                 type: 'GET',
                 url: "{{url('/submitRequest')}}",
                 data: {searchRequest: search_val, modeChoice: mode_val},
@@ -108,9 +140,15 @@
                     }
                 },
                 complete: function () {
-                    $("#pageBody").busyLoad("hide");
+                    $("#div_for_cancel_button").busyLoad("hide");
                 }
             });
+        });
+        $("#cancel-button").click(function () {
+            ajax_request.abort();
+            $("#div_for_cancel_button").busyLoad("hide");
+            $("#cancel-button").css('display', 'none');
+            document.getElementById('search_bar').value = '';
         });
     </script>
 @endsection
