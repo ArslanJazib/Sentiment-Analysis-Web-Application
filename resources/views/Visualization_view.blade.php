@@ -10,12 +10,15 @@
                         SentiEntrepreneur</p>
                 </div>
                 <div style="text-align: end;" class="col-9">
+                    <button id="cancel-button" type="button" class="btn btn-danger btn-lg ml-2">
+                        <i class="fas fa-times"></i>
+                    </button>
                     <span class="navbar-brand">Visualization Page</span>
                 </div>
             </div>
         </div>
     </nav>
-    <div class="wrapper d-flex align-items-stretch">
+    <div id="div_for_cancel_button" class="wrapper d-flex align-items-stretch">
         <nav style="min-width: 180px;max-width: 180px" id="sidebar">
             <div class="custom-menu">
                 <button type="button" id="visualsidebarCollapse" class="btn btn-primary">
@@ -93,14 +96,14 @@
                                  aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body">
                                     <ul class="list">
-                                        <li class="list-item">
+                                        <li style="cursor: pointer" class="list-item">
                                             <a id="generalTag" class="dashTool">
                                                 <img style="margin: 0.5%" class="box small img-fluid"
                                                      src="{{asset('assets/images/group.png')}}" alt="...">
                                                 General
                                             </a>
                                         </li>
-                                        <li class="list-item">
+                                        <li style="cursor: pointer" class="list-item">
                                             <a id="startupTag" class="dashTool">
                                                 <img style="margin: 0.5%" class="box small img-fluid"
                                                      src="{{asset('assets/images/enterpreneur.png')}}" alt="...">
@@ -145,10 +148,21 @@
                                 <div class="accordion-body">
                                     <ul id="topicList" class="list">
                                         @foreach ($sentiment['previousTopics'] as $topic)
-                                            <li>
-                                                <a class="dashTool"
-                                                   href="{{url('/topicVisualizationData').'?searchRequest=' . $sentiment['topic'] . "&topicChoice=" . $topic['topic_id']."&modeChoice=" . $sentiment['mode']}}">{{$topic['topic']}}</a>
-                                            </li>
+                                            @if($sentiment['mode']=="Start-Up")
+                                                @if(str_contains($topic['topic'], '#StartUp'))
+                                                    <li style="cursor: pointer">
+                                                        <a class="dashTool"
+                                                           href="{{url('/topicVisualizationData').'?searchRequest=' . $sentiment['topic'] . "&topicChoice=" . $topic['topic_id']."&modeChoice=" . $sentiment['mode']}}">{{$topic['topic']}}</a>
+                                                    </li>
+                                                @endif
+                                            @elseif($sentiment['mode']=="General")
+                                                @if(!str_contains($topic['topic'], '#StartUp'))
+                                                    <li style="cursor: pointer">
+                                                        <a class="dashTool"
+                                                           href="{{url('/topicVisualizationData').'?searchRequest=' . $sentiment['topic'] . "&topicChoice=" . $topic['topic_id']."&modeChoice=" . $sentiment['mode']}}">{{$topic['topic']}}</a>
+                                                    </li>
+                                                @endif
+                                            @endif
                                         @endforeach
                                     </ul>
                                 </div>
@@ -234,17 +248,9 @@
                 e.preventDefault();
                 $.magnificPopup.close();
             });
-            $("#modeList li a").click(function () {
-                $("#modebtn:first-child").text($(this).text());
-                $("#modebtn:first-child").val($(this).text());
-            });
-            $("#topicList li a").click(function () {
-                $("#topicbtn:first-child").text($(this).text());
-                $("#topicbtn:first-child").val($(this).text());
-            });
             if ("{{$sentiment['mode']}}" === "General") {
                 $("#generalTag").css("color", "yellow");
-            } else if ("{{$sentiment['mode']}}" === "StartUp") {
+            } else if ("{{$sentiment['mode']}}" === "Start-Up") {
                 $("#startupTag").css("color", "yellow");
             }
             $("#currentTopic").css("color", "yellow");
@@ -260,15 +266,26 @@
             });
         });
 
-        $("#modebtn").click(function () {
+        var ajax_request;
+
+        $("#generalTag").click(function () {
+
             var search_val = "{{$sentiment['topic']}}";
-            var mode_val = $("#modebtn").text();
-            $("#pageBody").busyLoad("show", {
+            var tempVal = search_val.substring(0, search_val.indexOf("#") - 1);
+            if (tempVal !== "") {
+                search_val = tempVal;
+            }
+            var mode_val = "General";
+
+            $("#div_for_cancel_button").busyLoad("show", {
                 background: "rgba(255,255,255,0.5)",
-                image: "{{asset('assets/images/loading.gif')}}",
-                maxSize: "500px",
+                image: "{{asset('assets/images/visualLoading.gif')}}",
+                maxSize: "100%",
             });
-            $.ajax({
+
+            document.getElementById('cancel-button').style.display = 'inline-block';
+
+            ajax_request = $.ajax({
                 type: 'GET',
                 url: "{{url('/submitRequest')}}",
                 data: {searchRequest: search_val, modeChoice: mode_val},
@@ -276,9 +293,40 @@
                     window.location.href = '{{url('/visualize')}}' + "?searchRequest=" + search_val + "&modeChoice=" + mode_val;
                 },
                 complete: function () {
-                    $("#pageBody").busyLoad("hide");
+                    $("#div_for_cancel_button").busyLoad("hide");
                 }
             });
+        });
+
+        $("#startupTag").click(function () {
+            var search_val = "{{$sentiment['topic']}}";
+            console.log(search_val);
+            var mode_val = "Start-Up";
+            $("#div_for_cancel_button").busyLoad("show", {
+                background: "rgba(255,255,255,0.5)",
+                image: "{{asset('assets/images/visualLoading.gif')}}",
+                maxSize: "100%",
+            });
+            document.getElementById('cancel-button').style.display = 'inline-block';
+
+            ajax_request = $.ajax({
+                type: 'GET',
+                url: "{{url('/submitRequest')}}",
+                data: {searchRequest: search_val, modeChoice: mode_val},
+                success: function () {
+                    window.location.href = '{{url('/visualize')}}' + "?searchRequest=" + search_val + "&modeChoice=" + mode_val;
+                },
+                complete: function () {
+                    $("#div_for_cancel_button").busyLoad("hide");
+                }
+            });
+        });
+
+
+        $("#cancel-button").click(function () {
+            ajax_request.abort();
+            $("#div_for_cancel_button").busyLoad("hide");
+            $("#cancel-button").css('display', 'none');
         });
 
         var barChartData = {
@@ -318,7 +366,7 @@
                     hoverBackgroundColor: ['rgba(0, 195, 71,1)'],
                     pointBorderWidth: 3,
                     pointHoverRadius: 10,
-                    pointHoverBackgroundColor:  ['rgba(0, 195, 71,0.5)', 'rgba(139,0,0,0.5)'],
+                    pointHoverBackgroundColor: ['rgba(0, 195, 71,0.5)', 'rgba(139,0,0,0.5)'],
                     pointHoverBorderColor: ['rgba(0, 195, 71,1)', 'rgba(139,0,0,1)'],
                     pointHoverBorderWidth: 2,
                     pointRadius: 2,
@@ -376,7 +424,7 @@
 
                     pointBorderColor: 'rgba(255,99,132,1)',
                     pointBackgroundColor: 'rgba(255,99,132,0.5)',
-                    hoverBackgroundColor:'rgba(255,99,132,0.5)',
+                    hoverBackgroundColor: 'rgba(255,99,132,0.5)',
                     pointBorderWidth: 3,
                     pointHoverRadius: 10,
                     pointHoverBackgroundColor: 'rgba(255,99,132,0.5)',

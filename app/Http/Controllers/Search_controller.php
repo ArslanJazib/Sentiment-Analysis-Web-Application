@@ -57,7 +57,7 @@ class Search_controller extends Controller
 
         // If anything input is not matching the rules reload the page and display errors
         if ($validator->fails()) {
-            return response()->json(['errors'=>$validator->errors()->all()]);
+            return response()->json(['errors' => $validator->errors()->all()]);
         } else {
             // Data is sent from the form via POST method
             $search = $request->get('searchRequest');
@@ -68,6 +68,7 @@ class Search_controller extends Controller
             $url = "https://api.twitter.com/1.1/search/tweets.json";
             // Request parameters are via GET method to Twitter API
             $requestMethod = "GET";
+
             if ($mode === "Start-Up") {
                 $search = $search . " #StartUp";
                 // Search Parameter with language as English and total count as 10
@@ -88,16 +89,18 @@ class Search_controller extends Controller
 
             $topicId = $this->topics_model->select('topic_id')
                 ->where('web_userId', '=', $userId)
+                ->where('topic', '=', $search)
                 ->get()
                 ->toArray();
+
             $topicId = $topicId[0]['topic_id'];
+
 
             // Request is sent to Twitter API
             $tweets = json_decode($this->twitter->setGetfield($getfield)
                 ->buildOauth($url, $requestMethod)
                 ->performRequest());
             //Twitter API Exception
-
             foreach ($tweets as $tweets_obj) {
                 foreach ($tweets_obj as $tweet) {
                     if (isset($tweet->text)) {
@@ -248,6 +251,7 @@ class Search_controller extends Controller
             ->get()
             ->toArray();
 
+
         $topicId = null;
         foreach ($topics as $current_topic) {
             if ($request->get('modeChoice') === "Start-Up") {
@@ -275,17 +279,14 @@ class Search_controller extends Controller
             ->get();
 
         //$days=array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
-        $day_Sentiment=array("Mon"=>0,"Tue"=>0,"Wed"=>0,"Thu"=>0,"Fri"=>0,"Sat"=>0,"Sun"=>0);
+        $day_Sentiment = array("Mon" => 0, "Tue" => 0, "Wed" => 0, "Thu" => 0, "Fri" => 0, "Sat" => 0, "Sun" => 0);
         $days_found = $this->tweets_model->select('day')
             ->groupBy('day')
             ->get()->toArray();
         $days_found = array_column($days_found, 'day');
-        //dd($days_found);
-        //dd(typeOf($days_found));
-        foreach ($day_Sentiment as $day => $day_overall_sentiment)
-        {
-            if (in_array($day, $days_found))
-            {
+
+        foreach ($day_Sentiment as $day => $day_overall_sentiment) {
+            if (in_array($day, $days_found)) {
                 $day_positives = count($this->tweets_model->select('*')
                     ->where('sentiment', '=', 1)
                     ->where('topic_id', '=', $topicId)
@@ -300,31 +301,27 @@ class Search_controller extends Controller
                     ->where('day', '=', $day)
                     ->get());
                 //dd($day_negatives);
-                if($day_positives >= $day_negatives){
+                if ($day_positives >= $day_negatives) {
                     // 2 for positive
-                    $day_Sentiment[$day]=2;
-                }
-                else{
+                    $day_Sentiment[$day] = 2;
+                } else {
                     // 1 for negative
-                    $day_Sentiment[$day]=1;
+                    $day_Sentiment[$day] = 1;
 
                 }
-            }
-            else{
+            } else {
                 // 0 for neutral
-                $day_Sentiment[$day]=0;
+                $day_Sentiment[$day] = 0;
 
             }
-
         }
 
         if ($request->get('modeChoice') == "Start-Up") {
-            $topic_input = $request->get('searchRequest') . " & StartUp";
+            $topic_input = $request->get('searchRequest') . " #StartUp";
         } else {
             $topic_input = $request->get('searchRequest');
         }
-        $sentiment = array("daySentiment"=>$day_Sentiment,"previousTopics"=>$topics,"total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic_input, "mode" => $request->get('modeChoice'));
-
+        $sentiment = array("daySentiment" => $day_Sentiment, "previousTopics" => $topics, "total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic_input, "mode" => $request->get('modeChoice'));
         //$sentiment = array("previousTopics" => $topics, "total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic_input, "mode" => $request->get('modeChoice'));
         return view('Visualization_view', ['sentiment' => $sentiment]);
     }
@@ -394,7 +391,7 @@ class Search_controller extends Controller
             $topic_input = $request->get('searchRequest');
         }
 
-//        $sentiment = array("daySentiment"=>$day_Sentiment,"previousTopics"=>$topics,"total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic, "mode" => $request->get('modeChoice'));
+//      $sentiment = array("daySentiment"=>$day_Sentiment,"previousTopics"=>$topics,"total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic, "mode" => $request->get('modeChoice'));
         $sentiment = array("previousTopics" => $topics, "total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic, "mode" => $request->get('modeChoice'));
 
         return view('Visualization_view', ['sentiment' => $sentiment]);
@@ -416,13 +413,13 @@ class Search_controller extends Controller
         //Twitter API Exception
 
         // Array is filled with all hashtags in 10 tweets
-        $recommendations=[];
+        $recommendations = [];
         foreach ($tweets as $tweets_obj) {
             foreach ($tweets_obj as $tweet) {
-                if(isset($tweet->entities)){
+                if (isset($tweet->entities)) {
                     foreach ($tweet->entities->hashtags as $hashtag) {
-                        if (!in_array($hashtag->text, $recommendations)){
-                            array_push($recommendations,$hashtag->text);
+                        if (!in_array($hashtag->text, $recommendations)) {
+                            array_push($recommendations, $hashtag->text);
                         }
                     }
                 }
