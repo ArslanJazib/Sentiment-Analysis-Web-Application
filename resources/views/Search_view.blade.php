@@ -11,10 +11,10 @@
                         SentiEntrepreneur</p>
                 </div>
                 <div style="text-align: end;" class="col-9">
+                    <span class="navbar-brand">Search Page</span>
                     <button id="cancel-button" type="button" class="btn btn-danger btn-lg ml-2">
                         <i class="fas fa-times"></i>
                     </button>
-                    <span class="navbar-brand">Search Page</span>
                 </div>
             </div>
         </div>
@@ -50,7 +50,6 @@
                                        type="text"
                                        placeholder="E.g: Artificial Intelligence, Machine Learning, Python"
                                        aria-label=".form-control-lg example">
-
                             </div>
                         </div>
                         <div class="input-wrap second">
@@ -149,6 +148,27 @@
             $("#div_for_cancel_button").busyLoad("hide");
             $("#cancel-button").css('display', 'none');
             document.getElementById('search_bar').value = '';
+        });
+
+        // Functions used for adding autocomplete recommendations
+        var auto_recommendations = [];
+        $("#search_bar").keyup(function () {
+            var text = $(this).val();
+            if (text.length >= 2) {
+                $.ajax({
+                    type: 'GET',
+                    url: "{{url('/auto_recommendations')}}",
+                    success: function (topic_recommendations) {
+                        auto_recommendations = topic_recommendations;
+                        $("#recommendation_list").empty();
+                        for (var topic in auto_recommendations) {
+                            $("#recommendation_list").append(
+                                "<li class='active'> <a class='recommendedTopic' href='#'>#" + topic_recommendations[topic] + "</a> </li>"
+                            )
+                        }
+                    }
+                });
+            }
         });
     </script>
 @endsection

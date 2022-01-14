@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Tweets;
 use App\Models\Topics;
 use TwitterStreamingApi;
@@ -10,6 +11,7 @@ use Symfony\Component\Process\Process;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\TwitterAPIExchange;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Search_controller extends Controller
@@ -59,23 +61,26 @@ class Search_controller extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()->all()]);
         } else {
-            // Data is sent from the form via POST method
+            // Data is sent from the form via get method
             $search = $request->get('searchRequest');
             $mode = $request->get('modeChoice');
+
             // We are using # along with the search item
             $search = "#" . $search;
+
             // Twitter Search API URL
             $url = "https://api.twitter.com/1.1/search/tweets.json";
+
             // Request parameters are via GET method to Twitter API
             $requestMethod = "GET";
 
             if ($mode === "Start-Up") {
                 $search = $search . " #StartUp";
                 // Search Parameter with language as English and total count as 10
-                $getfield = "?q=$search&lang=en&count=3";
+                $getfield = "?q=$search&lang=en&count=10";
             } else {
                 // Search Parameter with language as English and total count as 10
-                $getfield = "?q=$search&lang=en&count=3";
+                $getfield = "?q=$search&lang=en&count=10";
             }
 
             // This function will insert data in the web user & topic table
@@ -92,15 +97,29 @@ class Search_controller extends Controller
                 ->where('topic', '=', $search)
                 ->get()
                 ->toArray();
-
             $topicId = $topicId[0]['topic_id'];
 
+            // Exception Handling
+            $flag = true;
+            // Will call the Twitter API 10 times in case the connection request was not accepted the first time
+            for ($x = 0; $x <= 10; $x++) {
+                if ($flag == true) {
+                    try {
+                        // Request is sent to Twitter API
+                        $tweets = json_decode($this->twitter->setGetfield($getfield)
+                            ->buildOauth($url, $requestMethod)
+                            ->performRequest());
+                        $flag = false;
 
-            // Request is sent to Twitter API
-            $tweets = json_decode($this->twitter->setGetfield($getfield)
-                ->buildOauth($url, $requestMethod)
-                ->performRequest());
-            //Twitter API Exception
+                    } catch (Exception  $e) {
+                        //return ($e->getMessage());
+                        $flag = true;
+                    }
+                } else {
+                    break;
+                }
+            }
+
             foreach ($tweets as $tweets_obj) {
                 foreach ($tweets_obj as $tweet) {
                     if (isset($tweet->text)) {
@@ -282,6 +301,7 @@ class Search_controller extends Controller
         $day_Sentiment = array("Mon" => 0, "Tue" => 0, "Wed" => 0, "Thu" => 0, "Fri" => 0, "Sat" => 0, "Sun" => 0);
         $days_found = $this->tweets_model->select('day')
             ->groupBy('day')
+            ->where('topic_id', '=', $topicId)
             ->get()->toArray();
         $days_found = array_column($days_found, 'day');
 
@@ -326,77 +346,6 @@ class Search_controller extends Controller
         return view('Visualization_view', ['sentiment' => $sentiment]);
     }
 
-    public function topic_visualize_data(Request $request)
-    {
-        $userId = $this->webUsers_model->select('web_userId')
-            ->where('user_ip', '=', $request->ip())
-            ->get()
-            ->toArray();
-        $userId = $userId[0]['web_userId'];
-
-        $topics = $this->topics_model->select('topic', 'topic_id')
-            ->where('web_userId', '=', $userId)
-            ->get()
-            ->toArray();
-
-        $topicId = $request->get('topicChoice');
-        $topic = $this->topics_model->select('topic')
-            ->where('topic_id', '=', $topicId)
-            ->get()
-            ->toArray();
-        $topic = $topic[0]['topic'];
-        $topic = ltrim($topic, $topic[0]);
-
-        $negatives = $this->tweets_model->select('sentiment')
-            ->where('sentiment', '=', 0)
-            ->where('topic_id', '=', $topicId)
-            ->where('web_userId', '=', $userId)
-            ->get();
-
-        $positives = $this->tweets_model->select('sentiment')
-            ->where('sentiment', '=', 1)
-            ->where('topic_id', '=', $topicId)
-            ->where('web_userId', '=', $userId)
-            ->get();
-
-//        $days=array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
-//        $day_Sentiment=array("Mon"=>0,"Tue"=>0,"Wed"=>0,"Thu"=>0,"Fri"=>0,"Sat"=>0,"Sun"=>0);
-//        foreach ($days as $day){
-//            $daypositives = count($this->tweets_model->select('*')
-//                ->where('sentiment', '=', 1)
-//                ->where('topic_id', '=', $topicId)
-//                ->where('web_userId', '=', $userId)
-//                ->where('day', '=', $day)
-//                ->get());
-//            $daynegatives = count($this->tweets_model->select('*')
-//                ->where('sentiment', '=', 0)
-//                ->where('topic_id', '=', $topicId)
-//                ->where('web_userId', '=', $userId)
-//                ->where('day', '=', $day)
-//                ->get());
-//            if($daypositives>$daynegatives){
-//                $day_Sentiment[$day]=1;
-//            }
-//            elseif ($daypositives<$daynegatives){
-//                $day_Sentiment[$day]=0;
-//            }
-//            else{
-//                $day_Sentiment[$day]=1;
-//            }
-//        }
-
-        if ($request->get('modeChoice') == "Start-Up") {
-            $topic_input = $request->get('searchRequest') . " & StartUp";
-        } else {
-            $topic_input = $request->get('searchRequest');
-        }
-
-//      $sentiment = array("daySentiment"=>$day_Sentiment,"previousTopics"=>$topics,"total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic, "mode" => $request->get('modeChoice'));
-        $sentiment = array("previousTopics" => $topics, "total_positives" => count($positives), "total_negatives" => count($negatives), "topic" => $topic, "mode" => $request->get('modeChoice'));
-
-        return view('Visualization_view', ['sentiment' => $sentiment]);
-    }
-
     public function recommender()
     {
         // Twitter Search API URL
@@ -406,11 +355,76 @@ class Search_controller extends Controller
         // Search Parameter with language as English and total count as 10
         $getfield = "?q=#StartUp&lang=en&count=10";
 
-        // Request is sent to Twitter API
-        $tweets = json_decode($this->twitter->setGetfield($getfield)
-            ->buildOauth($url, $requestMethod)
-            ->performRequest());
-        //Twitter API Exception
+        // Exception Handling
+        $flag = true;
+        // Will call the Twitter API 10 times in case the connection request was not accepted the first time
+        for ($x = 0; $x <= 10; $x++) {
+            if ($flag == true) {
+                try {
+                    // Request is sent to Twitter API
+                    $tweets = json_decode($this->twitter->setGetfield($getfield)
+                        ->buildOauth($url, $requestMethod)
+                        ->performRequest());
+                    $flag = false;
+
+                } catch (Exception  $e) {
+                    //return ($e->getMessage());
+                    $flag = true;
+                }
+            } else {
+                break;
+            }
+        }
+
+        // Array is filled with all hashtags in 10 tweets
+        $recommendations = [];
+        foreach ($tweets as $tweets_obj) {
+            foreach ($tweets_obj as $tweet) {
+                if (isset($tweet->entities)) {
+                    foreach ($tweet->entities->hashtags as $hashtag) {
+                        if (!in_array($hashtag->text, $recommendations)) {
+                            array_push($recommendations, $hashtag->text);
+                        }
+                    }
+                }
+            }
+        }
+        return ($recommendations);
+    }
+
+    public function auto_recommender(Request $request)
+    {
+        // Data is sent from the form via get method
+        $search = $request->get('searchRequest');
+        // Twitter Search API URL
+        $url = "https://api.twitter.com/1.1/search/tweets.json";
+        // Request parameters are via GET method to Twitter API
+        $requestMethod = "GET";
+
+        $search = $search . " #StartUp";
+        // Search Parameter with language as English and total count as 10
+        $getfield = "?q=$search&lang=en&count=10";
+
+        // Exception Handling
+        $flag = true;
+        // Will call the Twitter API 10 times in case the connection request was not accepted the first time
+        for ($x = 0; $x <= 10; $x++) {
+            if ($flag == true) {
+                try {
+                    // Request is sent to Twitter API
+                    $tweets = json_decode($this->twitter->setGetfield($getfield)
+                        ->buildOauth($url, $requestMethod)
+                        ->performRequest());
+                    $flag = false;
+
+                } catch (Exception  $e) {
+                    //return ($e->getMessage());
+                    $flag = true;
+                }
+            } else {
+                break;
+            }
+        }
 
         // Array is filled with all hashtags in 10 tweets
         $recommendations = [];

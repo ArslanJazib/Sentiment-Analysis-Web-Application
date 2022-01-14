@@ -6,14 +6,14 @@
                 <div class="col-3">
                     <img style="margin: 0.5%" class="box small img-fluid" src="{{asset('assets/images/FYPLogo.png')}}"
                          alt="...">
-                    <p style="display:inline;font-family:'SelfDeceptionRegular';font-size: xx-large;margin-top: 0;margin-bottom: -1rem">
-                        SentiEntrepreneur</p>
+                    <a href="{{url('/Search')}}" style="display:inline;font-family:'SelfDeceptionRegular';font-size: xx-large;margin-top: 0;margin-bottom: -1rem">
+                        SentiEntrepreneur</a>
                 </div>
                 <div style="text-align: end;" class="col-9">
+                    <span class="navbar-brand">Visualization Page</span>
                     <button id="cancel-button" type="button" class="btn btn-danger btn-lg ml-2">
                         <i class="fas fa-times"></i>
                     </button>
-                    <span class="navbar-brand">Visualization Page</span>
                 </div>
             </div>
         </div>
@@ -54,7 +54,8 @@
                                     Sentiment cannot be determined for {{$sentiment['topic']}}
                                 @endif
                             </h1>
-                            <p>
+                            @if($sentiment['mode']=="Start-Up")
+`                            <p>
                                 @if ($sentiment['total_positives']>$sentiment['total_negatives'])
                                     You should invest in business ventures involving {{$sentiment['topic']}}
                                 @elseif ($sentiment['total_positives']<$sentiment['total_negatives'])
@@ -63,6 +64,7 @@
                                     Sentiment is inconclusive
                                 @endif
                             </p>
+                            @endif
                             <p><a class="btn btn-danger popup-modal-dismiss" href="#">Close</a></p>
                         </div>
                     </li>
@@ -151,15 +153,13 @@
                                             @if($sentiment['mode']=="Start-Up")
                                                 @if(str_contains($topic['topic'], '#StartUp'))
                                                     <li style="cursor: pointer">
-                                                        <a class="dashTool"
-                                                           href="{{url('/topicVisualizationData').'?searchRequest=' . $sentiment['topic'] . "&topicChoice=" . $topic['topic_id']."&modeChoice=" . $sentiment['mode']}}">{{$topic['topic']}}</a>
+                                                        <a class="dashTool startUptopic">{{$topic['topic']}}</a>
                                                     </li>
                                                 @endif
                                             @elseif($sentiment['mode']=="General")
                                                 @if(!str_contains($topic['topic'], '#StartUp'))
                                                     <li style="cursor: pointer">
-                                                        <a class="dashTool"
-                                                           href="{{url('/topicVisualizationData').'?searchRequest=' . $sentiment['topic'] . "&topicChoice=" . $topic['topic_id']."&modeChoice=" . $sentiment['mode']}}">{{$topic['topic']}}</a>
+                                                        <a class="dashTool generaltopic">{{$topic['topic']}}</a>
                                                     </li>
                                                 @endif
                                             @endif
@@ -300,7 +300,6 @@
 
         $("#startupTag").click(function () {
             var search_val = "{{$sentiment['topic']}}";
-            console.log(search_val);
             var mode_val = "Start-Up";
             $("#div_for_cancel_button").busyLoad("show", {
                 background: "rgba(255,255,255,0.5)",
@@ -320,6 +319,23 @@
                     $("#div_for_cancel_button").busyLoad("hide");
                 }
             });
+        });
+
+        $(".generaltopic").click(function () {
+            var search_val = $(this).text();
+            search_val=search_val.substring(1);
+            console.log(search_val);
+            var mode_val = "General";
+            window.location.href = '{{url('/visualize')}}' + "?searchRequest=" + search_val + "&modeChoice=" + mode_val;
+        });
+
+        $(".startUptopic").click(function () {
+            var search_val = $(this).text();
+            search_val=search_val.substring(1);
+            var tempVal = search_val.substring(0, search_val.indexOf("#") - 1);
+            search_val = tempVal;
+            var mode_val = "Start-Up";
+            window.location.href = '{{url('/visualize')}}' + "?searchRequest=" + search_val + "&modeChoice=" + mode_val;
         });
 
 

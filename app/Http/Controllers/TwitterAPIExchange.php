@@ -13,6 +13,7 @@ namespace App\Http\Controllers;
  * @version  1.0.4
  * @link     http://github.com/j7mbo/twitter-api-php
  */
+use Exception;
 class TwitterAPIExchange extends Controller
 {
     /**
