@@ -100,24 +100,19 @@ class Search_controller extends Controller
             $topicId = $topicId[0]['topic_id'];
 
             // Exception Handling
-            $flag = true;
             // Will call the Twitter API 10 times in case the connection request was not accepted the first time
-            for ($x = 0; $x <= 10; $x++) {
-                if ($flag == true) {
-                    try {
-                        // Request is sent to Twitter API
-                        $tweets = json_decode($this->twitter->setGetfield($getfield)
-                            ->buildOauth($url, $requestMethod)
-                            ->performRequest());
-                        $flag = false;
-
-                    } catch (Exception  $e) {
-                        //return ($e->getMessage());
-                        $flag = true;
-                    }
-                } else {
+            for ($counter = 0; $counter <= 10; $counter++) {
+                try {
+                    // Request is sent to Twitter API
+                    $tweets = json_decode($this->twitter->setGetfield($getfield)
+                        ->buildOauth($url, $requestMethod)
+                        ->performRequest());
                     break;
+
+                } catch (Exception  $e) {
+                    //return ($e->getMessage());
                 }
+
             }
 
             foreach ($tweets as $tweets_obj) {
@@ -356,24 +351,19 @@ class Search_controller extends Controller
         $getfield = "?q=#StartUp&lang=en&count=10";
 
         // Exception Handling
-        $flag = true;
         // Will call the Twitter API 10 times in case the connection request was not accepted the first time
-        for ($x = 0; $x <= 10; $x++) {
-            if ($flag == true) {
-                try {
-                    // Request is sent to Twitter API
-                    $tweets = json_decode($this->twitter->setGetfield($getfield)
-                        ->buildOauth($url, $requestMethod)
-                        ->performRequest());
-                    $flag = false;
-
-                } catch (Exception  $e) {
-                    //return ($e->getMessage());
-                    $flag = true;
-                }
-            } else {
+        for ($counter = 0; $counter <= 10; $counter++) {
+            try {
+                // Request is sent to Twitter API
+                $tweets = json_decode($this->twitter->setGetfield($getfield)
+                    ->buildOauth($url, $requestMethod)
+                    ->performRequest());
                 break;
+
+            } catch (Exception  $e) {
+                //return ($e->getMessage());
             }
+
         }
 
         // Array is filled with all hashtags in 10 tweets
@@ -400,30 +390,25 @@ class Search_controller extends Controller
         $url = "https://api.twitter.com/1.1/search/tweets.json";
         // Request parameters are via GET method to Twitter API
         $requestMethod = "GET";
-
+        $search = "#" . $search;
         $search = $search . " #StartUp";
         // Search Parameter with language as English and total count as 10
         $getfield = "?q=$search&lang=en&count=10";
 
         // Exception Handling
-        $flag = true;
         // Will call the Twitter API 10 times in case the connection request was not accepted the first time
-        for ($x = 0; $x <= 10; $x++) {
-            if ($flag == true) {
-                try {
-                    // Request is sent to Twitter API
-                    $tweets = json_decode($this->twitter->setGetfield($getfield)
-                        ->buildOauth($url, $requestMethod)
-                        ->performRequest());
-                    $flag = false;
-
-                } catch (Exception  $e) {
-                    //return ($e->getMessage());
-                    $flag = true;
-                }
-            } else {
+        for ($counter = 0; $counter <= 10; $counter++) {
+            try {
+                // Request is sent to Twitter API
+                $tweets = json_decode($this->twitter->setGetfield($getfield)
+                    ->buildOauth($url, $requestMethod)
+                    ->performRequest());
                 break;
+
+            } catch (Exception  $e) {
+                //return ($e->getMessage());
             }
+
         }
 
         // Array is filled with all hashtags in 10 tweets

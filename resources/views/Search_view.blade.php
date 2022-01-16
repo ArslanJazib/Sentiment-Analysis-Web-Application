@@ -158,6 +158,7 @@
                 $.ajax({
                     type: 'GET',
                     url: "{{url('/auto_recommendations')}}",
+                    data: {searchRequest: text},
                     success: function (topic_recommendations) {
                         auto_recommendations = topic_recommendations;
                         $("#recommendation_list").empty();
