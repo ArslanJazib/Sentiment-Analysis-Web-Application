@@ -19,6 +19,25 @@
             </div>
         </div>
     </nav>
+    <div id="myModal" class="modal fade">
+        <div class="modal-dialog" style="margin-top: 9%;">
+            <div style="border-color: #191A19" class="modal-content">
+                <div style="background-color: #191A19" class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <h2 style="color: white" class="modal-title">
+                                See what people are feeling on the topic of your choice.
+                            </h2>
+                        </div>
+                        <div style="background-color: #191A19" class="col-6">
+                            <img class="img-fluid" src="{{asset('assets/images/FYPLogo.png')}}"
+                                 alt="...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="div_for_cancel_button" style="height: 80vh" class="wrapper d-flex align-items-stretch">
         <nav id="sidebar">
             <div class="custom-menu">
@@ -91,6 +110,10 @@
     <script>
         $(document).ready(function () {
             $("#pageBody").css("background-image", "url('assets/images/mainPage_background.png')");
+            $("#myModal").modal('show');
+            setTimeout(function() {
+                $("#myModal").modal('hide');
+            }, 10000);
             $.ajax({
                 type: 'GET',
                 url: "{{url('/recommendations')}}",
